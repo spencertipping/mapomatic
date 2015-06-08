@@ -36,9 +36,9 @@ print compress <<'EOF';
     var sy = 0, sx = 0;
     var ls = $('script[type="geodata"]').text().replace(/^\s*|\s*$/g, '').split(/~/);
     for (var i = 0, l = ls.length; i < l; ++i) {
-      var ps = ls[i].split(/\s+/, 3);
+      var ps = ls[i].split(/\s+/);
       var ll = [+ps[0], +ps[1]];
-      L.marker(ll).addTo(m).bindPopup(ps[2]);
+      L.marker(ll).addTo(m).bindPopup(ps.slice(2).join(' '));
       sy += ll[0];
       sx += ll[1];
     }
