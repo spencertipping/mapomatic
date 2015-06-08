@@ -1,5 +1,5 @@
 # Map-O-Matic: easy geo data visualization
-[!mapomatic](http://spencertipping.com/bassomatic.jpg)
+![mapomatic](http://spencertipping.com/bassomatic.jpg)
 
 mapomatic generates `data:` URLs that become [Leaflet](http://leafletjs.com)
 maps designed to display specific datasets. This means you don't need any web
