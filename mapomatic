@@ -1,0 +1,52 @@
+#!/usr/bin/env perl
+# mapomatic: generate data: urls to display geographic data.
+use strict;
+use warnings;
+
+sub compress {$_[0] =~ s/^\s+//mgr =~ s/\v+//gr =~ s/\s+/ /gr}
+
+print compress <<'EOF';
+data:text/html,
+<html>
+<head>
+  <link rel="stylesheet"href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css"/>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+  <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+  <style>body {margin: 0}</style>
+</head>
+<body id='map'>
+  <script type='geodata'>
+EOF
+
+print join "~", map compress($_), <>;
+
+print compress <<'EOF';
+  </script>
+  <script>
+  $(function () {
+    var rf = function () {
+      if ($('#map').height() !== $(window).height())
+        $('#map').height($(window).height());
+    };
+    $(window).resize(rf);
+    setTimeout(rf, 100);
+    var m = L.map('map');
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+                {attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'}).addTo(m);
+    var sy = 0, sx = 0;
+    var ls = $('script[type="geodata"]').text().replace(/^\s*|\s*$/g, '').split(/~/);
+    for (var i = 0, l = ls.length; i < l; ++i) {
+      var ps = ls[i].split(/\s+/, 3);
+      var ll = [+ps[0], +ps[1]];
+      L.marker(ll).addTo(m).bindPopup(ps[2]);
+      sy += ll[0];
+      sx += ll[1];
+    }
+    m.setView([sy / ls.length, sx / ls.length], 4);
+  });
+  </script>
+</body>
+</html>
+EOF
+
+print "\n";
