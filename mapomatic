@@ -49,4 +49,4 @@ print compress <<'EOF';
 </html>
 EOF
 
-print "\n";
+print "\n\0";
