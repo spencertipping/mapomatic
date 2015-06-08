@@ -3,9 +3,12 @@
 use strict;
 use warnings;
 
+use MIME::Base64 qw/encode_base64/;
+
 sub compress {$_[0] =~ s/^\s+//mgr =~ s/\v+//gr =~ s/\s+/ /gr}
 
-print compress <<'EOF';
+my $url_header = 'data:text/html;base64,';
+my $header = compress <<'EOF';
 data:text/html,
 <html>
 <head>
@@ -18,9 +21,9 @@ data:text/html,
   <script type='geodata'>
 EOF
 
-print join "~", map compress($_), <>;
+my $encoded = join "~", map compress($_), <>;
 
-print compress <<'EOF';
+my $footer = compress <<'EOF';
   </script>
   <script>
   $(function () {
@@ -49,4 +52,4 @@ print compress <<'EOF';
 </html>
 EOF
 
-print "\n\0";
+print $url_header . encode_base64($header . $encoded . $footer) =~ s/\n//gr, "\n\0";
